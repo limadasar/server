@@ -31,7 +31,7 @@ io.on('connection', socket => {
   })
 
   socket.on('logout', function(payload){
-    users = []
+    users = users.filter(user => user.id !== payload.id)
     io.emit('signOut', users)
   })
 
@@ -41,13 +41,22 @@ io.on('connection', socket => {
   })
 
   socket.on('removeRoom', function(payload){
-    rooms = []
+    rooms = rooms.filter(room => room.id !== payload.id)
     io.emit('exitRoom', rooms)
   })
 
-  socket.on('playGames', function(payload){
+  socket.on('joinRoom', function(payload){
+    rooms.forEach(el => {
+      if(el.id === payload.idRoom){
+        el.players.push({id: payload.idUser, name: payload.name})
+      }
+    })
+    io.emit('sendRoom', rooms)
+  })
+
+  socket.on('gameStart', function(payload){
     games.push(payload)
-    io.emit('answer', games)
+    io.emit('games', games)
   })
 
 });
