@@ -23,6 +23,7 @@ io.on('connection', socket => {
   socket.on('login', function(payload){
     users.push(payload)
     socket.emit('sendUserLogin', payload)
+    io.emit('sendRooms', rooms)
   })
 
   socket.on('logout', function(payload){
@@ -31,13 +32,25 @@ io.on('connection', socket => {
   })
 
   socket.on('getUser', function(payload){
-    let byId = users.filter(user => user.id == payload.id)
-    socket.emit('sendUser', byId)
+    let output;
+    users.map((data) => {
+      data.id === payload.id ? socket.emit('sendUser', data) : null
+    });
   })
 
   socket.on('createRoom', function(payload){
     rooms.push(payload)
-    io.emit('sendRoom', rooms)
+    io.emit('sendRooms', rooms)
+  })
+
+  socket.on('getRooms', function () {
+    io.emit('sendRooms', rooms);
+  })
+
+  socket.on('getRoom', function(payload){
+    users.map((data) => {
+      data.id === payload.id ? socket.emit('sendRoom', data) : null
+    });
   })
 
   socket.on('removeRoom', function(payload){
