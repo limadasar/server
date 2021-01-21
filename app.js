@@ -56,9 +56,10 @@ io.on('connection', socket => {
     rooms.forEach(el => {
       if(el.id === payload.idRoom){
         el.players.push({id: payload.idUser, name: payload.name})
+        io.emit('sendRoom', el)
       }
     })
-    io.emit('sendRoom', rooms)
+    io.emit('sendRooms', rooms)
   })
 
   socket.on('exitRoom', function(payload){
@@ -67,6 +68,8 @@ io.on('connection', socket => {
         data.players = data.players.filter(u => u.id !== payload.idUser)
         if(data.player.length === 0){
           rooms = rooms.filter(room => room.id !== payload.idRoom)
+        } else {
+          io.emit('sendRoom', data)
         }
       }
     })
