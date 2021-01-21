@@ -52,11 +52,6 @@ io.on('connection', socket => {
     });
   })
 
-  socket.on('removeRoom', function(payload){
-    rooms = rooms.filter(room => room.id !== payload.id)
-    io.emit('deleteRoom', rooms)
-  })
-
   socket.on('joinRoom', function(payload){
     rooms.forEach(el => {
       if(el.id === payload.idRoom){
@@ -68,11 +63,14 @@ io.on('connection', socket => {
 
   socket.on('exitRoom', function(payload){
     rooms.map(data => {
-      if(data === roomId){
-        data.players = data.players.filter(u => u.id !== payload.id)
+      if(data.id === payload.idRoom){
+        data.players = data.players.filter(u => u.id !== payload.idUser)
+        if(data.player.length === 0){
+          rooms = rooms.filter(room => room.id !== payload.idRoom)
+        }
       }
     })
-    io.emit('outRoom', rooms)
+    io.emit('sendRooms', rooms)
   })
 
   socket.on('gameStart', function(payload){
