@@ -19,14 +19,9 @@ let games =  []
 
 io.on('connection', socket => {
   console.log (`connect ke server`)
-  const socketId = socket.id
 
   socket.on('login', function(payload){
-    const data = {
-      id: socketId,
-      name: payload
-    }
-    users.push(data)
+    users.push(payload)
     io.emit('sendUser', users)
   })
 
