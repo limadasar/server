@@ -22,12 +22,17 @@ io.on('connection', socket => {
 
   socket.on('login', function(payload){
     users.push(payload)
-    io.emit('sendUser', users)
+    socket.emit('sendUserLogin', payload)
   })
 
   socket.on('logout', function(payload){
     users = users.filter(user => user.id !== payload.id)
-    io.emit('signOut', users)
+    socket.emit('signOut', users)
+  })
+
+  socket.on('getUser', function(payload){
+    let byId = users.filter(user => user.id == payload.id)
+    socket.emit('sendUser', byId)
   })
 
   socket.on('createRoom', function(payload){
@@ -37,7 +42,7 @@ io.on('connection', socket => {
 
   socket.on('removeRoom', function(payload){
     rooms = rooms.filter(room => room.id !== payload.id)
-    io.emit('exitRoom', rooms)
+    io.emit('deleteRoom', rooms)
   })
 
   socket.on('joinRoom', function(payload){
@@ -47,6 +52,15 @@ io.on('connection', socket => {
       }
     })
     io.emit('sendRoom', rooms)
+  })
+
+  socket.on('exitRoom', function(payload){
+    rooms.map(data => {
+      if(data === roomId){
+        data.players = data.players.filter(u => u.id !== payload.id)
+      }
+    })
+    io.emit('outRoom', rooms)
   })
 
   socket.on('gameStart', function(payload){
