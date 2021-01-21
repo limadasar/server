@@ -32,7 +32,6 @@ io.on('connection', socket => {
   })
 
   socket.on('getUser', function(payload){
-    let output;
     users.map((data) => {
       data.id === payload.id ? socket.emit('sendUser', data) : null
     });
