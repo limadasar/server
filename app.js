@@ -40,6 +40,7 @@ io.on('connection', socket => {
   socket.on('createRoom', function(payload){
     rooms.push(payload)
     io.emit('sendRooms', rooms)
+    // io.emit('sendRoom', payload)
   })
 
   socket.on('getRooms', function () {
@@ -47,7 +48,7 @@ io.on('connection', socket => {
   })
 
   socket.on('getRoom', function(payload){
-    users.map((data) => {
+    rooms.map((data) => {
       data.id === payload.id ? socket.emit('sendRoom', data) : null
     });
   })
@@ -66,7 +67,7 @@ io.on('connection', socket => {
     rooms.map(data => {
       if(data.id === payload.idRoom){
         data.players = data.players.filter(u => u.id !== payload.idUser)
-        if(data.player.length === 0){
+        if(data.players.length === 0){
           rooms = rooms.filter(room => room.id !== payload.idRoom)
         } else {
           io.emit('sendRoom', data)
@@ -76,11 +77,15 @@ io.on('connection', socket => {
     io.emit('sendRooms', rooms)
   })
 
-  socket.on('gameStart', function(payload){
-    games.push(payload)
-    io.emit('games', games)
-  })
+  // socket.on('gameStart', function(payload){
+  //   games.push(payload)
+  //   io.emit('games', games)
+  // })
 
+  socket.on('createGame', function (payload) {
+    games.push(payload);
+    io.emit('sendPlay', payload);
+  });
 });
 
 
