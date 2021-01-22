@@ -56,7 +56,7 @@ io.on('connection', (socket) => {
       });
       io.emit('sendRooms', rooms);
     });
-  
+  ///
     socket.on('createGame', function (payload) {
       games.push(payload);
       io.emit('sendPlay', payload);
