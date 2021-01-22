@@ -50,7 +50,7 @@ io.on('connection', (socket) => {
           if (data.players.length === 0) {
             rooms = rooms.filter((room) => room.id !== payload.idRoom);
           } else {
-            io.emit('sendRoom', data);
+            io.emit('sendExitRoom', data);
           }
         }
       });
